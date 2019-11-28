@@ -33,4 +33,13 @@ public class Main {
         String[] instruncaoQuebrada = instrucao.split(" ");
         return instruncaoQuebrada;
     }
+
+    /*
+    * Fluxo de dados:
+    * PC: endereço da próxima instrução a ser buscadana memória, atualizar pc para a próxima instrução(+4)
+    * Leitura dos registradores(Banca de Registradores)
+    * ULA de Controle para identificar o tipo de operação e enviar essa operação para a ULA executar de fato
+    * Usar ULA para calcular: resultado aritmetico e salvar resultado no registrador de destino
+    * Após isso o resultado é enviado para o banco de registradores com o registrador de destino
+    * */
 }

@@ -20,6 +20,9 @@ public class ProcessadorMIPS {
     public String getRegistradorSaida() {return registradorSaida;}
     public void setRegistradorSaida(String registradorSaida) {this.registradorSaida = registradorSaida;}
 
+    /*
+    * Mapear as operações
+    * */
     public String obterFunc(String operacao){
         if(operacao.contains("ADD")){
             return "000000";
@@ -32,6 +35,9 @@ public class ProcessadorMIPS {
         }
     }
 
+    /*
+    * Método para quebrar a instrução enviada
+    * */
     public static String[] quebrarInstrucao(String instrucao){
         String[] instruncaoQuebrada = instrucao.split(" ");
         return instruncaoQuebrada;
@@ -134,6 +140,10 @@ public class ProcessadorMIPS {
         return ULA(instrucao);
     }
 
+    /*
+    * Método que representa a ULA, onde é identificado a operação e a instrução é encaminhada para
+    * a ULA de controle.
+    * */
     public String ULA(String instrucao){
         String[] instrucaoQuebrada = quebrarInstrucao(instrucao);
         String func = obterFunc(instrucao);
@@ -147,31 +157,32 @@ public class ProcessadorMIPS {
         }
     }
 
+    /*
+    * Método que representa a ULA de controle, onde as operações de fato são efetuadas
+    * */
     public String ULAControle(String func, String instrucao){
         String[] instrucaoQuebrada = quebrarInstrucao(instrucao);
-        //String reg1 = instrucaoQuebrada[2];
-        //String re2 = instrucaoQuebrada[3];
-        //String regDestino = instrucaoQuebrada[1];
+        Integer resultado;
 
-        String reg1Binario = converteDecimalEmBinario(Integer.valueOf(registrador1));
-        String reg2Binario = converteDecimalEmBinario(Integer.valueOf(registrador2));
-        String regDestinoBinario = converteDecimalEmBinario(Integer.valueOf(registradorSaida));
+        String reg1Binario = String.format("%06d", Integer.valueOf(converteDecimalEmBinario(Integer.valueOf(registrador1))));
+        String reg2Binario = String.format("%06d", Integer.valueOf(converteDecimalEmBinario(Integer.valueOf(registrador2))));
+        String regDestinoBinario = String.format("%06d", Integer.valueOf(converteDecimalEmBinario(Integer.valueOf(registradorSaida))));;
 
         System.out.println("Instrução em binário: " + func + "|" + regDestinoBinario +
                 "|" + reg1Binario + "|" + reg2Binario);
-        Integer resultado = Integer.valueOf(registrador1) + Integer.valueOf(registrador2);
-        System.out.println("Resultado da instrução:" + resultado);
+
+        if(instrucaoQuebrada[0].contains("ADD")){
+            resultado = Integer.valueOf(registrador1) + Integer.valueOf(registrador2);
+        }else if(instrucaoQuebrada[0].contains("ADDI")){
+            resultado = Integer.valueOf(registrador1) + Integer.valueOf(registrador2);
+        }else if(instrucaoQuebrada[0].contains("SUB")){
+            resultado = Integer.valueOf(registrador1) - Integer.valueOf(registrador2);
+        }else{
+            resultado = 000000;
+        }
+
+        System.out.println("Resultado da instrução tipo R:" + resultado);
 
         return resultado.toString();
     }
-
-    /*
-     * Fluxo de dados:
-     * PC: endereço da próxima instrução a ser buscadana memória, atualizar pc para a próxima instrução(+4)
-     * Leitura dos registradores(Banca de Registradores)
-     * ULA de Controle para identificar o tipo de operação e enviar essa operação para a ULA executar de fato
-     * Usar ULA para calcular: resultado aritmetico e salvar resultado no registrador de destino
-     * Após isso o resultado é enviado para o banco de registradores com o registrador de destino
-     * */
-
 }
